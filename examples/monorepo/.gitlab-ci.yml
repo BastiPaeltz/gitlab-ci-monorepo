@@ -1,0 +1,87 @@
+# BEGIN job-specific configuration
+.test: &test
+  stage: test
+  script:
+    - cd $PROJECT_NAME
+    - echo "hello from $(basename $PWD)"  
+    - echo "testing ..."  
+
+.compile: &compile
+  stage: build
+  script:
+    - cd $PROJECT_NAME
+    - echo "hello from $(basename $PWD)"
+    - echo "compiling ..."  
+
+#
+# END job-specific configuration
+
+# BEGIN project-specific configuration
+
+.customer-dashboard: &customer-dashboard
+  variables:
+    PROJECT_NAME: customer-dashboard
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*customer-dashboard.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_CUSTOMER_DASHBOARD == "true"
+
+.payment-api: &payment-api
+  variables:
+    PROJECT_NAME: payment-api
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*payment-api.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_PAYMENT_API == "true"
+
+.accounting-service: &accounting-service
+  variables:
+    PROJECT_NAME: accounting-service
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*accounting-service.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_ACCOUNTING_SERVICE == "true"
+
+#
+# END project-specific configuration
+
+# BEGIN actual ci definition
+
+image: ubuntu
+
+before_script:
+  - cd examples/monorepo
+
+stages:
+    - test
+    - build
+
+test customer-dashboard:
+  <<: *customer-dashboard
+  <<: *test
+
+test payment-api:
+  <<: *payment-api
+  <<: *test
+
+test accounting-service:
+  <<: *accounting-service
+  <<: *test
+
+compile customer-dashboard:
+  <<: *customer-dashboard
+  <<: *compile
+
+compile payment-api:
+  <<: *payment-api
+  <<: *compile
+
+compile accounting-service:
+  <<: *accounting-service
+  <<: *compile
+
+#
+# END actual ci definition
