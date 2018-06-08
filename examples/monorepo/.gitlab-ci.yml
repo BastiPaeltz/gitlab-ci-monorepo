@@ -48,7 +48,7 @@
 #
 # END project-specific configuration
 
-# BEGIN actual ci definition
+# BEGIN actual pipeline definition
 
 image: ubuntu
 
@@ -84,4 +84,4 @@ compile accounting-service:
   <<: *compile
 
 #
-# END actual ci definition
+# END actual pipeline definition
