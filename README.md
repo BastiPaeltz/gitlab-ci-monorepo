@@ -14,7 +14,7 @@ GitLab 11.0 (scheduled to release on June 22nd) makes it possible to [use regex]
 
 In [examples/monorepo](./examples/monorepo) you will find 3 sub-directories. Each one represents a separate codebase in a monorepo. Now let's look at the [.gitlab-ci.yml](./examples/monorepo/.gitlab-ci.yml). The interesting section is the project/codebase-specific configuration:
 
-```
+```yml
 .payment-api: &payment-api
   variables:
     PROJECT_NAME: payment-api
@@ -77,7 +77,7 @@ One approach to preserve this while also adding file change detection for monore
 
 ```
 git push
-==> GitLab Webhook gets triggered
+==> GitLab webhook gets triggered on code push event
 ==> Push event payload including which files changed is sent to gitlab-trigger-proxy endpoint
 ==> gitlab-trigger-proxy parses which paths (files/directories) changed and sets variables accordingly
 ==> Trigger pipeline via API including trigger variables
@@ -89,11 +89,11 @@ I wrote a sample implementation in Go (~250 LOC), but the process is pretty stra
 
 ### Quickstart gitlab-trigger-proxy
 
-1. Install it
+1. **Install it**
 
 If you have Go installed:
 
-```
+```shell
 $ go get github.com/BastiPaeltz/gitlab-ci-monorepo/gitlab-trigger-proxy
 $ $GOPATH/bin/gitlab-trigger-proxy --help
 
@@ -116,36 +116,36 @@ Usage of gitlab-trigger-proxy:
 
 You can also use Docker:
 
-```
+```shell
 docker run bastipaeltz/gitlab-trigger-proxy
 ```
 
-Otherwise you can use a binary for your platform from the GitHub releases page.
+Or you can use a binary for your platform from the GitHub releases page of this project.
 
-2. Set up your GitLab project
+2. **Set up your GitLab project**
 
 Go to `settings/ci_cd` in your project, scroll down to `Pipeline triggers` and create a token. I will use "mytriggertoken" in the example below.  
 Create a webhook to send push events to gitlab-trigger-proxy under `settings/integrations`. It is recommended to also specify a secret token. I will use "mysecrettoken" in the example below.
 
-3. Run gitlab-trigger-proxy
+3. **Run gitlab-trigger-proxy**
 
 Here is how to run gitlab-trigger-proxy for the monorepo example:
 
-```
+```shell
 gitlab-trigger-proxy --trigger-token=mytriggertoken --secret-token=mysecrettoken --directory="examples/monorepo/accounting-service" --directory="examples/monorepo/customer-dashboard" --directory="examples/monorepo/payment-api" --file=".gitlab-ci.yml"
 ```
 
 This will listen on port 8080 for GitLab webhooks and track changes for all projects root directories as well as the `.gitlab-ci.yml` file because we probably want to trigger a build if it changes.
 
-4. Adjust .gitlab-ci.yml
+4. **Adjust .gitlab-ci.yml**
 
-The CI variables set by gitlab-trigger-proxy are `DIRECTORIES_CHANGED` and `FILES_CHANGED`. All paths are separated by ":" (you can change the separator with `--separator`). You can inspect them at the at the right side of the Gitlab CI jobs dashboard page:
+The CI variables set by gitlab-trigger-proxy are `DIRECTORIES_CHANGED` and `FILES_CHANGED`. All paths are separated by a colon (you can change the separator with `--separator`). You can inspect them at the right side of the Gitlab CI jobs dashboard page:
 
 ![trigger_variables_example](./examples/images/trigger_variables_example.png)
 
 Now we can adjust the CI jobs section to trigger `only` if a certain directory or file changed:
 
-```
+```yml
 .customer-dashboard: &customer-dashboard
   variables:
     PROJECT_NAME: customer-dashboard
