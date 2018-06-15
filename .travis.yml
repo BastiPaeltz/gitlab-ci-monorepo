@@ -1,32 +1,30 @@
-env:
-  matrix:
-  - GOOS: darwin
-    GOARCH: amd64
-  - GOOS: linux
-    GOARCH: amd64
-  - GOOS: windows
-    GOARCH: amd64
-  - GOOS: freebsd
-    GOARCH: amd64
-
 language: go
 go:
   - 1.10.x
 
+env:
+  matrix:
+    - BUILD_ARCH: "amd64"
+    - BUILD_ARCH: "386"
+    - BUILD_ARCH: "arm"
+
+before_install:
+  - go get github.com/mitchellh/gox
+
+install:
+  - # skip
+
 before_script:
   - cd gitlab-trigger-proxy/
 script:
-  - mkdir build/
-  - go build -o build/gitlab-trigger-proxy
-  - cd build/ && for f in *; do mv "$f" "$GOOS-$GOARCH-$f"; done
-  - cd ../
+  - gox -arch=$BUILD_ARCH
 
 deploy:
   provider: releases
   api_key:
     secure: NQkiH/hgUPvjc6naFOFW9+9n5flEl7/c7E2uhsg9r+GqybzWrR9Qnkt2sjyqX3CT/j6a3zmb+1qid07BDknqCXQ2TWgrF0MfiCizSFu8vvBFWtepY/rQW8sfOIMC8XlaNlEBMmbPo+BR9ENGXmnjwLFkRb8ml1ztBdfzRApk5729pwp0DtqqX0tqAMPbdFZg1UIbQ5kjszXC1cY42OkyyQ2gzOMp1Ynw5l/xxoByJiqMUV4UbYpO6Dth4ed1zFyuuUihujXQxw8y3M2CqXYqgF1jc20BSUaPag9QYJ+IlYSpxPZnC7viTGCMq5Y2VJFlKN5VgpZvf2I3qlbVg9rD2mXxYZAKDmSj+zP4KbDk658TytdS0GfmtooddjeaFI+MlsYBhK02pdHG68/ZsA5glmjfzSuUCdOVdAUpWhxhW1y2OG2h6GoyR6FQXjg/Ukc4v34TrzR65yQEaTe/44YX/tBm3dA+rCa3gijkxlCe3VQUng34BYzLtLnG/2Y5O6/Fc3QiqB0xNZL2S6inCqby52zx7GjNLE3rLp5CZkdBNPwKeItbmSt1wgeWu7aBWb1R1XbSKsAWH52oOqlM/o9qZOX6Dpk7uVWQHFnf/0j81lQOQuolM92eu6ckuyLHXa0emee1sbjpSIMY16+ZNRlNdVD0LEugJrLgFUrF0IljDvM=
   file_glob: true
-  file: build/*
+  file: gitlab-trigger-proxy_*
   skip_cleanup: true
   on:
     repo: BastiPaeltz/gitlab-ci-monorepo
