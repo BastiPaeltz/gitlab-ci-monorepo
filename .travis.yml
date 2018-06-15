@@ -1,0 +1,36 @@
+sudo: required
+env:
+  matrix:
+  - GOOS: darwin
+    GOARCH: amd64
+  - GOOS: linux
+    GOARCH: amd64
+  - GOOS: windows
+    GOARCH: amd64
+  - GOOS: freebsd
+    GOARCH: amd64
+services:
+- docker
+language: go
+go:
+  - 1.10.x
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+before_script:
+  - cd gitlab-trigger-proxy/
+  - mkdir build/
+script:
+  - go build -o build/gitlab-trigger-proxy
+deploy:
+  provider: releases
+  api_key:
+    secure: NQkiH/hgUPvjc6naFOFW9+9n5flEl7/c7E2uhsg9r+GqybzWrR9Qnkt2sjyqX3CT/j6a3zmb+1qid07BDknqCXQ2TWgrF0MfiCizSFu8vvBFWtepY/rQW8sfOIMC8XlaNlEBMmbPo+BR9ENGXmnjwLFkRb8ml1ztBdfzRApk5729pwp0DtqqX0tqAMPbdFZg1UIbQ5kjszXC1cY42OkyyQ2gzOMp1Ynw5l/xxoByJiqMUV4UbYpO6Dth4ed1zFyuuUihujXQxw8y3M2CqXYqgF1jc20BSUaPag9QYJ+IlYSpxPZnC7viTGCMq5Y2VJFlKN5VgpZvf2I3qlbVg9rD2mXxYZAKDmSj+zP4KbDk658TytdS0GfmtooddjeaFI+MlsYBhK02pdHG68/ZsA5glmjfzSuUCdOVdAUpWhxhW1y2OG2h6GoyR6FQXjg/Ukc4v34TrzR65yQEaTe/44YX/tBm3dA+rCa3gijkxlCe3VQUng34BYzLtLnG/2Y5O6/Fc3QiqB0xNZL2S6inCqby52zx7GjNLE3rLp5CZkdBNPwKeItbmSt1wgeWu7aBWb1R1XbSKsAWH52oOqlM/o9qZOX6Dpk7uVWQHFnf/0j81lQOQuolM92eu6ckuyLHXa0emee1sbjpSIMY16+ZNRlNdVD0LEugJrLgFUrF0IljDvM=
+  file_glob: true
+  file: gitlab-trigger-proxy/build/*
+  skip_cleanup: true
+  on:
+    repo: BastiPaeltz/gitlab-ci-monorepo
+    tags: true

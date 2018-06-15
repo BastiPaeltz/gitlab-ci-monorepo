@@ -92,7 +92,7 @@ I wrote a sample implementation in Go (~250 LOC), but the process is pretty stra
 If you have Go installed:
 
 ```
-$ go get github.com/BastiPaeltz/gitlab-ci-monorepo
+$ go get github.com/BastiPaeltz/gitlab-ci-monorepo/gitlab-trigger-proxy
 $ $GOPATH/bin/gitlab-trigger-proxy --help
 
 Usage of gitlab-trigger-proxy:
@@ -110,6 +110,12 @@ Usage of gitlab-trigger-proxy:
     	Choose what separates paths in trigger variables value. (default ":")
   -trigger-token string
     	REQUIRED - GitLab pipeline trigger token. (default "REQUIRED")
+```
+
+You can also use Docker:
+
+```
+docker run bastipaeltz/gitlab-trigger-proxy
 ```
 
 Otherwise you can use a binary for your platform from the GitHub releases page.
