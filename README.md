@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo.svg?branch=master)](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo)
+
 Walkthrough and examples on how GitLab 10.7+ and 11.0+ help managing CI when using **monorepos**.
 
 ## The problem
