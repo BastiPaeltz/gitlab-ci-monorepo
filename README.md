@@ -1,16 +1,16 @@
-[![Build Status](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo.svg?branch=master)](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo)
+[![Build Status](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo.svg?branch=v1.0.0)](https://travis-ci.org/BastiPaeltz/gitlab-ci-monorepo)
 
 Walkthrough and examples on how GitLab 10.7+ and 11.0+ help managing CI when using **monorepos**.
 
 ## The problem
 
-As of right now it is only possible to have at most one `.gitlab-ci.yml` file per repository. However multiple projects / codebases are housed in one repo when using monorepos which makes it more difficult to use with GitLab CI.
+As of right now it is only possible to have at most one `.gitlab-ci.yml` file per repository. However multiple projects/codebases are housed in one repo when using monorepos which makes it more difficult to use with GitLab CI.
 
 I will show **2 approaches** that tackle this issue.  
 Both are based on [variable expressions](https://docs.gitlab.com/ce/ci/variables/README.html#variables-expressions) introduced in GitLab 10.7 (released in late April 2018) that allow you to evaluate variables in `only` and `except` policies.
 
 ## Approach 1: Use git commit message to explicitly tell which CI jobs to run
-GitLab 11.0 (scheduled to release on June 22nd) makes it possible to [use regex](https://docs.gitlab.com/ce/ci/variables/README.html#supported-syntax) in these variable expressions. Let's look at an example of how to leverage this with monorepos:
+GitLab 11.0 (scheduled to release on June 22nd 2018) makes it possible to [use regex](https://docs.gitlab.com/ce/ci/variables/README.html#supported-syntax) in these variable expressions. Let's look at an example of how to leverage this with monorepos:
 
 In [examples/monorepo](./examples/monorepo) you will find 3 sub-directories. Each one represents a separate codebase in a monorepo. Now let's look at the [.gitlab-ci.yml](./examples/monorepo/.gitlab-ci.yml). The interesting section is the project/codebase-specific configuration:
 
