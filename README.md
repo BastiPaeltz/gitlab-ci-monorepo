@@ -10,7 +10,7 @@ I will show **2 approaches** that tackle this issue.
 Both are based on [variable expressions](https://docs.gitlab.com/ce/ci/variables/README.html#variables-expressions) introduced in GitLab 10.7 (released in late April 2018) that allow you to evaluate variables in `only` and `except` policies.
 
 ## Approach 1: Use git commit message to explicitly tell which CI jobs to run
-GitLab 11.0 (scheduled to release on June 22nd 2018) makes it possible to [use regex](https://docs.gitlab.com/ce/ci/variables/README.html#supported-syntax) in these variable expressions. Let's look at an example of how to leverage this with monorepos:
+GitLab 11.0 (released June 22nd 2018) makes it possible to [use regex](https://docs.gitlab.com/ce/ci/variables/README.html#supported-syntax) in these variable expressions. Let's look at an example of how to leverage this with monorepos:
 
 In [examples/monorepo](./examples/monorepo) you will find 3 sub-directories. Each one represents a separate codebase in a monorepo. Now let's look at the [.gitlab-ci.yml](./examples/monorepo/.gitlab-ci.yml). The interesting section is the project/codebase-specific configuration:
 
@@ -50,11 +50,9 @@ This will trigger payment-api and customer-dashboard related jobs **only**:
 
 ![jobs_screenshot](./examples/images/jobs_screenshot.png)
 
-When you want to explicitly run the pipeline (e.g. via GitLab web dashboard) for one or more specific codebases, you can set `RUN_JOBS_<CODEBASE_NAME>` to true. If you want to run CI jobs for all codebases, set `RUN_JOBS_ALL` to true. If we do not include these two options here, it will not be possible to (re-)run a pipeline because the commit message regex will never match.
+When you want to explicitly run the pipeline (e.g. via GitLab web dashboard) for one or more specific codebases, you can set `RUN_JOBS_<CODEBASE_NAME>` to true. If you want to run CI jobs for all codebases, set `RUN_JOBS_ALL` to true. If we do not include these two options here, it will not be possible to (re-)run a pipeline manually because the commit message regex will never match.
 
 **Attention**: If you use this approach and push multiple commits to a branch at once, it will only run the jobs specified in the most recent commit message!
-
-As of writing this GitLab 11.0 is not released yet, however you can use the official [Docker image](https://hub.docker.com/r/gitlab/gitlab-ce/tags/) to run a RC or nightly build. The Gitlab runner may have version 10.X when trying this out.
 
 ## Approach 2: Determine programmatically which jobs need to run and then trigger CI builds via API with variables
 
