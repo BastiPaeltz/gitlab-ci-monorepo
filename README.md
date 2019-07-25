@@ -2,6 +2,8 @@
 
 Walkthrough and examples on how GitLab 10.7+ and 11.0+ help managing CI when using **monorepos**.
 
+**Attention**: In the meantime GitLab introduced the `only:changes` feature which is geared towards the same problem as this repo. The solutions in this repo are more customizable / flexible but also more complex than the built-in GitLab feature.   
+
 ## The problem
 
 As of right now it is only possible to have at most one `.gitlab-ci.yml` file per repository. However multiple projects/codebases are housed in one repo when using monorepos which makes it more difficult to use with GitLab CI.
